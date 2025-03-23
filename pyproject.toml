@@ -1,14 +1,15 @@
 [project]
-name = "comfyui-styles_csv_loader"
-description = "This extension allows users to load styles from a CSV file, primarily for migration purposes from the automatic1111 Stable Diffusion web UI."
+name = "comfyui-styles_csv_loader_zh"
+description = ""
 version = "1.0.0"
-license = "MIT"
+license = {file = "LICENSE"}
+dependencies = ["requests>=2.25.0", "# 以下是翻译功能的可选依赖项，安装任意一个即可启用更好的翻译功能", "googletrans==4.0.0-rc1", "# deep-translator>=1.9.1"]
 
 [project.urls]
-Repository = "https://github.com/theUpsider/ComfyUI-Styles_CSV_Loader"
+Repository = "https://github.com/assemly/comfyui-styles_csv_loader_zh"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = "theupsider"
-DisplayName = "ComfyUI-Styles_CSV_Loader"
+PublisherId = "styles_csv_loader_zh"
+DisplayName = "comfyui-styles_csv_loader_zh"
 Icon = ""

@@ -1,6 +1,6 @@
 # ComfyUI Styles CSV Loader
 
-这个扩展允许用户从CSV文件加载风格预设，主要用于从automatic1111稳定扩散Web UI迁移。
+这个扩展允许用户从CSV文件加载风格预设。
 
 ## 特点
 
