@@ -5,7 +5,141 @@ import csv
 import codecs
 import json
 import shutil
+import requests
 from server import PromptServer
+
+# 添加自动翻译功能
+def translate_chinese_to_english(text):
+    """将中文文本翻译为英文"""
+    if not text or text.strip() == "":
+        return ""
+    
+    # 替换中文标点为英文标点
+    punctuation_map = {
+        "，": ",",  # 中文逗号 -> 英文逗号
+        "。": ".",  # 中文句号 -> 英文句号
+        "；": ";",  # 中文分号 -> 英文分号
+        "：": ":",  # 中文冒号 -> 英文冒号
+        "！": "!",  # 中文感叹号 -> 英文感叹号
+        "？": "?",  # 中文问号 -> 英文问号
+        """: "\"",  # 中文引号 -> 英文引号
+        """: "\"",  # 中文引号 -> 英文引号
+        "「": "\"",  # 中文引号 -> 英文引号
+        "」": "\"",  # 中文引号 -> 英文引号
+        "【": "[",  # 中文方括号 -> 英文方括号
+        "】": "]",  # 中文方括号 -> 英文方括号
+        "（": "(",  # 中文圆括号 -> 英文圆括号
+        "）": ")",  # 中文圆括号 -> 英文圆括号
+        "《": "<",  # 中文尖括号 -> 英文尖括号
+        "》": ">",  # 中文尖括号 -> 英文尖括号
+        "、": ",",  # 中文顿号 -> 英文逗号
+        "～": "~",  # 中文波浪线 -> 英文波浪线
+        "·": "`",  # 中文间隔号 -> 英文反引号
+    }
+    
+    # 替换标点
+    for cn_punct, en_punct in punctuation_map.items():
+        text = text.replace(cn_punct, en_punct)
+    
+    # 检测文本是否包含中文字符
+    if not any(u'\u4e00' <= char <= u'\u9fff' for char in text):
+        return text  # 如果没有中文字符，直接返回已转换标点的文本
+    
+    try:
+        # 尝试使用googletrans库进行翻译（免费，不需要API key）
+        try:
+            from googletrans import Translator
+            translator = Translator()
+            result = translator.translate(text, src='zh-cn', dest='en')
+            return result.text
+        except ImportError:
+            # 如果没有安装googletrans库，尝试使用deep_translator库
+            try:
+                from deep_translator import GoogleTranslator
+                translator = GoogleTranslator(source='zh-cn', target='en')
+                return translator.translate(text)
+            except ImportError:
+                # 如果两个库都没有安装，使用简单的词典映射
+                print("没有安装翻译库，使用简单的映射转换")
+                # 中文常见词汇的简单映射表
+                chinese_to_english = {
+                    "人物": "person",
+                    "美女": "beautiful girl",
+                    "帅哥": "handsome man",
+                    "风景": "landscape",
+                    "动物": "animal",
+                    "猫": "cat",
+                    "狗": "dog",
+                    "树": "tree",
+                    "花": "flower",
+                    "山": "mountain",
+                    "水": "water",
+                    "天空": "sky",
+                    "云": "cloud",
+                    "太阳": "sun",
+                    "月亮": "moon",
+                    "星星": "star",
+                    "房子": "house",
+                    "车": "car",
+                    "道路": "road",
+                    "城市": "city",
+                    "农村": "countryside",
+                    "高质量": "high quality",
+                    "精致": "exquisite",
+                    "细节": "detail",
+                    "真实": "realistic",
+                    "照片": "photo",
+                    "模糊": "blur",
+                    "扭曲": "distortion",
+                    "噪点": "noise",
+                    "画质差": "bad quality",
+                    "低分辨率": "low resolution",
+                    "不要": "no",
+                    "去除": "remove",
+                    "添加": "add",
+                    "增强": "enhance",
+                    "减弱": "reduce",
+                    "风格": "style",
+                    "写实": "realistic",
+                    "卡通": "cartoon",
+                    "动漫": "anime",
+                    "油画": "oil painting",
+                    "水彩": "watercolor",
+                    "素描": "sketch",
+                    "简约": "minimalist",
+                    "复古": "vintage",
+                    "未来": "futuristic",
+                    "科幻": "sci-fi",
+                    "奇幻": "fantasy",
+                    "恐怖": "horror",
+                    "可爱": "cute",
+                    "优雅": "elegant",
+                    "华丽": "gorgeous",
+                    "黑暗": "dark",
+                    "明亮": "bright",
+                    "柔和": "soft",
+                    "强烈": "strong",
+                    "日系": "Japanese style",
+                    "中国风": "Chinese style",
+                    "西方": "Western style",
+                    "古代": "ancient",
+                    "现代": "modern",
+                    "未来": "future",
+                }
+                
+                # 使用词典映射替换文本中的中文词汇
+                for cn, en in chinese_to_english.items():
+                    text = text.replace(cn, en)
+                
+                # 如果文本未被完全转换（仍然包含中文字符）
+                if any(u'\u4e00' <= char <= u'\u9fff' for char in text):
+                    print(f"警告：文本包含未能翻译的中文字符，建议安装翻译库以获得更好的效果。")
+                
+                return text
+                
+    except Exception as e:
+        print(f"翻译过程中出错: {e}")
+        return text  # 出错时返回原文
 
 # 将上传处理函数注册到PromptServer的API系统
 try:
@@ -294,6 +428,7 @@ class MultiStylesCSVLoader:
             "required": {
                 "csv_file": (csv_file_names, {"default": default_csv}),
                 "refresh": ("BOOLEAN", {"default": False, "label_on": "刷新", "label_off": "刷新"}),
+                "中文翻译": ("BOOLEAN", {"default": True, "label_on": "中文自动翻译为英文", "label_off": "保持原文"}),
                 "style1": (styles_list,),
                 "style2": (styles_list_with_none, {"default": "无"}),
                 "style3": (styles_list_with_none, {"default": "无"}),
@@ -316,7 +451,7 @@ class MultiStylesCSVLoader:
 
     def execute(self, csv_file, refresh, style1, style2="无", style3="无", style4="无", style5="无", 
                positive_prefix="", positive_suffix="", negative_prefix="", negative_suffix="", 
-               separator="逗号"):
+               separator="逗号", 中文翻译=True):
         # 如果选择了新的CSV文件或者请求刷新
         if csv_file in self.csv_files and (self.current_csv_path != self.csv_files[csv_file] or refresh):
             self.current_csv_path = self.csv_files[csv_file]
@@ -353,6 +488,17 @@ class MultiStylesCSVLoader:
             sep = " "
         elif separator == "换行":
             sep = "\n"
+        
+        # 如果启用了自动翻译，则对中文文本进行翻译
+        if 中文翻译:
+            if positive_prefix:
+                positive_prefix = translate_chinese_to_english(positive_prefix)
+            if positive_suffix:
+                positive_suffix = translate_chinese_to_english(positive_suffix)
+            if negative_prefix:
+                negative_prefix = translate_chinese_to_english(negative_prefix)
+            if negative_suffix:
+                negative_suffix = translate_chinese_to_english(negative_suffix)
         
         # 合并提示词
         combined_positive = positive_prefix
