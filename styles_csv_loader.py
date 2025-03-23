@@ -141,46 +141,6 @@ def translate_chinese_to_english(text):
         print(f"翻译过程中出错: {e}")
         return text  # 出错时返回原文
 
-# 将上传处理函数注册到PromptServer的API系统
-try:
-    server = PromptServer.instance
-    @server.routes.post("/upload/upload_csv_file")
-    async def upload_csv_file_handler(request):
-        try:
-            data = await request.post()
-            file = data.get('file')
-            if not file or not file.filename:
-                return server.create_error_response("没有找到上传的文件")
-
-            # 保存文件
-            target_dir = os.path.join(folder_paths.base_path, "csv_styles")
-            if not os.path.exists(target_dir):
-                os.makedirs(target_dir)
-                
-            file_name = file.filename
-            target_path = os.path.join(target_dir, file_name)
-            
-            # 保存上传的文件
-            with open(target_path, 'wb') as f:
-                while True:
-                    chunk = await file.read_chunk()
-                    if not chunk:
-                        break
-                    f.write(chunk)
-            
-            print(f"成功上传CSV文件: {file_name}")
-            return {"ui": {"text": [f"成功上传CSV文件: {file_name}"]}}
-        except Exception as e:
-            print(f"上传CSV文件时出错: {e}")
-            return server.create_error_response(f"上传失败: {str(e)}")
-    
-    print("成功注册CSV文件上传处理程序")
-except Exception as e:
-    print(f"注册CSV文件上传处理程序时出错: {e}")
-    
-# 添加用户选择上传文件的JavaScript代码
-WEB_DIRECTORY = "./js"
-class UploadCSVButton:
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -203,8 +163,6 @@ class UploadCSVButton:
     def VALIDATE_INPUTS(cls, **kwargs):
         return True
     
-
-
 class StylesCSVLoader:
     """
     Loads csv file with styles. For migration purposes from automatic11111 webui.
@@ -401,7 +359,6 @@ class StylesCSVLoader:
         
         return (self.styles_csv[styles][0], self.styles_csv[styles][1])
 
-
 class MultiStylesCSVLoader:
     """
     加载多个风格并合并提示词
@@ -522,7 +479,6 @@ class MultiStylesCSVLoader:
             combined_negative += negative_suffix
         
         return (combined_positive, combined_negative)
-
 
 class StylesPreview:
     """
