@@ -1,0 +1,7 @@
+README.md
+.gitignore
+LICENSE
+pyproject.toml
+styles_csv_loader.py
+__init__.py
+.github/workflows/publish.yml
