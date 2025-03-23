@@ -1,10 +1,13 @@
 [project]
 name = "comfyui-styles_csv_loader_zh"
-description = "This extension allows users to load styles from a CSV file, supporting Chinese.
-    在ComfyUI中添加以下节点之一：
-   - `Load Styles CSV` (加载风格CSV文件)
-   - `Multi Styles CSV` (多风格合并节点)
-   - `Styles Preview` (风格预览)"
+description = """
+This extension allows users to load styles from a CSV file, supporting Chinese.
+
+在ComfyUI中添加以下节点之一：
+- `Load Styles CSV` (加载风格CSV文件)
+- `Multi Styles CSV` (多风格合并节点)
+- `Styles Preview` (风格预览)
+"""
 version = "1.0.0"
 license = { file = "LICENSE" }
 
@@ -21,4 +24,4 @@ Repository = "https://github.com/assemly/comfyui-styles_csv_loader_zh.git"
 [tool.comfy]
 PublisherId = "assemly"  # 请替换为你的 ComfyUI Registry 账号名
 DisplayName = "ComfyUI Styles CSV Loader (ZH)"
-Icon = ""
+Icon = ""  # 如果有图标，请填写图标文件路径，否则可以删除这一行
