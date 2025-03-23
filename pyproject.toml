@@ -1,15 +1,20 @@
 [project]
 name = "comfyui-styles_csv_loader_zh"
-description = ""
+description = "This extension allows users to load styles from a CSV file, supporting Chinese."
 version = "1.0.0"
-license = {file = "LICENSE"}
-dependencies = ["requests>=2.25.0", "# 以下是翻译功能的可选依赖项，安装任意一个即可启用更好的翻译功能", "googletrans==4.0.0-rc1", "# deep-translator>=1.9.1"]
+license = { file = "LICENSE" }
+
+dependencies = [
+    "requests>=2.25.0",
+    "googletrans==4.0.0-rc1",
+    "deep-translator>=1.9.1"
+]
 
 [project.urls]
-Repository = "https://github.com/assemly/comfyui-styles_csv_loader_zh"
-#  Used by Comfy Registry https://comfyregistry.org
+Repository = "https://github.com/assemly/comfyui-styles_csv_loader_zh.git"
+# Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = "styles_csv_loader_zh"
-DisplayName = "comfyui-styles_csv_loader_zh"
+PublisherId = "assemly"  # 请替换为你的 ComfyUI Registry 账号名
+DisplayName = "ComfyUI Styles CSV Loader (ZH)"
 Icon = ""
