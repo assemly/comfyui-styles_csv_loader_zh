@@ -140,29 +140,7 @@ def translate_chinese_to_english(text):
     except Exception as e:
         print(f"翻译过程中出错: {e}")
         return text  # 出错时返回原文
-
-    @classmethod
-    def INPUT_TYPES(cls):
-        return {
-            "required": {},
-        }
-    
-    FUNCTION = "execute"
-    CATEGORY = "loaders"
-    RETURN_TYPES = ()
-    OUTPUT_NODE = True
-    
-    def execute(self):
-        return {}
-    
-    @classmethod
-    def IS_CHANGED(cls, **kwargs):
-        return float("NaN")
-
-    @classmethod
-    def VALIDATE_INPUTS(cls, **kwargs):
-        return True
-    
+   
 class StylesCSVLoader:
     """
     Loads csv file with styles. For migration purposes from automatic11111 webui.
@@ -346,7 +324,7 @@ class StylesCSVLoader:
     RETURN_TYPES = ("STRING","STRING")
     RETURN_NAMES = ("positive prompt", "negative prompt")
     FUNCTION = "execute"
-    CATEGORY = "loaders"   
+    CATEGORY = "styles_csv_loader"   
 
     def execute(self, csv_file, refresh, styles):
         # 如果选择了新的CSV文件或者请求刷新
@@ -404,7 +382,7 @@ class MultiStylesCSVLoader:
     RETURN_TYPES = ("STRING", "STRING")
     RETURN_NAMES = ("combined positive", "combined negative")
     FUNCTION = "execute"
-    CATEGORY = "loaders"   
+    CATEGORY = "styles_csv_loader"   
 
     def execute(self, csv_file, refresh, style1, style2="无", style3="无", style4="无", style5="无", 
                positive_prefix="", positive_suffix="", negative_prefix="", negative_suffix="", 
@@ -510,7 +488,7 @@ class StylesPreview:
     RETURN_TYPES = ("STRING", "STRING")
     RETURN_NAMES = ("positive prompt", "negative prompt")
     FUNCTION = "execute"
-    CATEGORY = "loaders"   
+    CATEGORY = "styles_csv_loader"   
 
     def execute(self, csv_file, refresh, style):
         # 如果选择了新的CSV文件或者请求刷新
