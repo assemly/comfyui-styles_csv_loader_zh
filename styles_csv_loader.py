@@ -458,54 +458,39 @@ class MultiStylesCSVLoader:
         
         return (combined_positive, combined_negative)
 
-class StylesPreview:
-    """
-    预览选择的风格内容
-    """
-    
+# 文本预览节点，通过JS扩展在节点上显示文本
+class PreviewTextNode:
     @classmethod
-    def INPUT_TYPES(cls):
-        # 找到所有可用的CSV文件
-        cls.csv_files = StylesCSVLoader.find_csv_files()
-        csv_file_names = list(cls.csv_files.keys())
-        
-        # 默认使用第一个CSV文件
-        default_csv = csv_file_names[0] if csv_file_names else ""
-        cls.current_csv_path = cls.csv_files.get(default_csv, "")
-        
-        # 加载样式数据
-        cls.styles_csv = StylesCSVLoader.load_styles_csv(cls.current_csv_path)
-        styles_list = list(cls.styles_csv.keys())
-        
+    def INPUT_TYPES(s):
         return {
             "required": {
-                "csv_file": (csv_file_names, {"default": default_csv}),
-                "refresh": ("BOOLEAN", {"default": False, "label_on": "刷新", "label_off": "刷新"}),
-                "style": (styles_list,),
-            }
+                "text": ("STRING", {"forceInput": True}),
+            },
         }
-    
-    RETURN_TYPES = ("STRING", "STRING")
-    RETURN_NAMES = ("positive prompt", "negative prompt")
-    FUNCTION = "execute"
-    CATEGORY = "styles_csv_loader"   
 
-    def execute(self, csv_file, refresh, style):
-        # 如果选择了新的CSV文件或者请求刷新
-        if csv_file in self.csv_files and (self.current_csv_path != self.csv_files[csv_file] or refresh):
-            self.current_csv_path = self.csv_files[csv_file]
-            self.styles_csv = StylesCSVLoader.load_styles_csv(self.current_csv_path)
+    RETURN_TYPES = ("STRING",)
+    FUNCTION = "preview_text"
+    CATEGORY = "styles_csv_loader"
+    OUTPUT_NODE = True
+    DESCRIPTION = "文本预览节点"
+
+    def preview_text(self, text):
+        """显示输入的文本在节点上"""
+        # 打印用于调试
+        print(f"PreviewTextNode 文本: {text[:50]}...")
         
-        if style in self.styles_csv:
-            positive, negative = self.styles_csv[style]
-            return (positive, negative)
-        return ("", "")
-
-
+        # 返回标准格式，确保文本不会被拆分成字符
+        return {
+            "ui": {
+                "string": text  # 直接传递文本字符串，不要放入数组
+            },
+            "result": (text,)
+        }
+        
 NODE_CLASS_MAPPINGS = {
     "Load Styles CSV": StylesCSVLoader,
     "Multi Styles CSV": MultiStylesCSVLoader,
-    "Styles Preview": StylesPreview
+    "Preview Text": PreviewTextNode
 }
 # 节点显示名称已移至__init__.py文件中
 # NODE_DISPLAY_NAME_MAPPINGS = {

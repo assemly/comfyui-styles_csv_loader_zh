@@ -6,7 +6,7 @@
 
 - 加载风格CSV文件并在ComfyUI中使用
 - 支持多风格合并
-- 支持风格预览
+- 支持预览文本节点
 - 支持自动将中文提示词转换为英文（免费，无需API密钥）
 
 ## 安装
@@ -19,7 +19,7 @@
 1. 在ComfyUI中添加以下节点之一：
    - `Load Styles CSV` (加载风格CSV文件)
    - `Multi Styles CSV` (多风格合并节点)
-   - `Styles Preview` (风格预览)
+   - `Preview Text` (预览文本节点)
 
 2. 在节点中选择您的CSV文件并选择所需的风格预设
 

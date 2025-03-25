@@ -6,9 +6,9 @@ This extension allows users to load styles from a CSV file, supporting Chinese.
 在ComfyUI中加载中添加以下节点之一：
 - `Load Styles CSV` (加载风格CSV文件)
 - `Multi Styles CSV` (多风格合并节点)
-- `Styles Preview` (风格预览)
+- `Preview Text` (预览文本节点)
 """
-version = "1.0.1"
+version = "1.0.2"
 license = { file = "LICENSE" }
 
 dependencies = [
